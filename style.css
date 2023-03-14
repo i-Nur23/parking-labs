@@ -1,52 +1,64 @@
-body {
-    background: #faf3c3;
-}
 
 header, main, footer {
     min-width: 1536px;
 }
 
 header .container, main .container, footer .container {
-    max-width: 1536px;
+    max-width: 1236px;
     margin: auto;
+    padding: 0 150px;
 }
 
 main {
     background: white;
     overflow: auto;
+    margin-top: 15px;
 }
 
 header {
+    margin-top: 10px;
     background: white;
     overflow: hidden;
 }
 
+footer {
+    background: #faf3c3;
+    overflow: hidden;
+    padding: 20px 0;
+    bottom: 0;
+    position: absolute;
+}
+
 header h1 {
     float: left;
-    width: 1024px;
+    width: 824px;
 }
 
 .float-left , .contact{
     float: left;
-    width: 1024px;
+    width: 824px;
 }
 
 header nav {
+    padding-top: 15px;
     float: right;
-    width: 512px;
 }
 
 .float-right, .sitemap {
     float: right;
-    width: 512px;
 }
 
 p , a, li{
     font-family: 'Roboto', sans-serif;
 }
 
+strong{
+    font-weight: bolder;
+}
+
 h1, h2, h3, h4, h5 {
     font-family: 'Jost', sans-serif;
+    margin: 7px 0;
 }
 
 h1 {
@@ -63,4 +75,44 @@ h3 {
 
 h4 {
     font-size: 1em;
+}
+
+hr {
+    margin: 10px 150px;
+    background: white;
+    width: 1236px;
+}
+
+ul.with-disks{
+    list-style-type: disc;
+    list-style-position: inside;
+}
+
+
+li {
+    padding: 5px 0;
+}
+
+.sitemap {
+    direction: rtl;
+}
+
+a{
+    color: #f55151;
+    text-decoration: none;
+
+}
+
+a:hover{
+    text-decoration: underline;
+}
+
+
+li.faq {
+    margin: 20px 0;
+    padding: 5px 0;
+}
+
+li.faq p{
+    margin: 10px 0;
 }

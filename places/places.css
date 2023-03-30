@@ -11,3 +11,23 @@
 .tabs a span.active {
     background: #a8a8a7;
 }
+
+div.content{
+    background: #a8a8a7;
+    border-bottom-right-radius: 0.5em;
+    border-bottom-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+    padding: 1em;
+}
+
+li.place{
+    background: white;
+    margin-top: 10px;
+    border-radius: 0.25em;
+    padding-left: 1em;
+    cursor: pointer;
+}
+
+li.place:hover{
+    background: #ddd;
+}

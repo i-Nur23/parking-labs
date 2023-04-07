@@ -31,3 +31,24 @@ li.place{
 li.place:hover{
     background: #ddd;
 }
+
+li.place-in-tag{
+    background: white;
+    margin-top: 10px;
+    border-radius: 0.25em;
+    padding-left: 1em;
+}
+
+btn-add{
+    border-radius: 0.25em;
+    background: #dddddd;
+    cursor: pointer;
+}
+
+input{
+    border-radius: 0.25em;
+}
+
+.place-input{
+    margin-bottom: 1em;
+}

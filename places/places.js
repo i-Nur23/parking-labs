@@ -1,16 +1,40 @@
-var main = function () {
+var main = (placesJson) => {
   "use strict";
-  var places = [
-    [ 0, 0, 0, 1, 0, 1, 1, 1, 1, 1 ],
-    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 ],
-    [ 1, 1, 0, 0, 1, 1, 1, 1, 1, 1 ]
-  ]
+  var places = placesJson;
+  var organizeByTags = (placesList) => {
+    var arrayOfTags = [];
+    placesList.forEach(place => {
+      place.tags.forEach(tag => {
+        if (arrayOfTags.indexOf(tag) == -1) {
+          arrayOfTags.push(tag)
+        }
+      })
+    })
+
+    var tagObjects = arrayOfTags.map(tag => {
+      var tagPlaces = [];
+      placesList.forEach(place => {
+        if (place.tags.indexOf(tag) !== -1) {
+          tagPlaces.push(place.name)
+        }
+      });
+      return {"name" : tag, "places" : tagPlaces};
+    })
+
+    return tagObjects;
+  }
 
   var addPlaceClickListener = (li, n) => {
     li.on("click", () => {
-      var row = li.attr('row');
-      var col = li.attr('col');
-      places[row][col] = !places[row][col];
+      var text = li.text();
+      var new_places = places.map(place => {
+        if (place.name === text){
+          place.isFree = !place.isFree;
+        }
+
+        return place;
+      });
+      places = new_places;
       $(`.tabs a:nth-child(${n}) span`).trigger("click")
     })
   }
@@ -24,26 +48,57 @@ var main = function () {
       $("main .content").empty();
       if ($element.parent().is(":nth-child(1)")){
         $content = $("<ul>");
-        for (let i = 0; i < places.length; i ++){
-          for (let j = 0; j < places[i].length; j ++){
-            if (!places[i][j]){
-              var $listElement = $("<li>").attr({ row : i, col : j}).text(`${String.fromCharCode(65 + i)}${j+1}`).addClass("place");
-              addPlaceClickListener($listElement, 1)
-              $content.append($listElement);
-            }
+        places.forEach(place => {
+          if (!place.isFree){
+            var $listElement = $("<li>").text(place.name).addClass("place");
+            addPlaceClickListener($listElement, 1)
+            $content.append($listElement);
           }
-        }
+        })
       } else if ($element.parent().is(":nth-child(2)")){
         $content = $("<ul>");
-        for (let i = 0; i < places.length; i ++){
-          for (let j = 0; j < places[i].length; j ++){
-            if (places[i][j]){
-              var $listElement = $("<li>").attr({ row : i, col : j}).text(`${String.fromCharCode(65 + i)}${j+1}`).addClass("place");
-              addPlaceClickListener($listElement, 2)
-              $content.append($listElement);
-            }
+        places.forEach(place => {
+          if (place.isFree){
+            var $listElement = $("<li>").text(place.name).addClass("place");
+            addPlaceClickListener($listElement, 2)
+            $content.append($listElement);
           }
-        }
+        })
+      } else if ($element.parent().is(":nth-child(3)")) {
+        var organizedByTags = organizeByTags(places);
+        console.log(organizedByTags)
+        $content = $("<ul>");
+        organizedByTags.forEach(tag => {
+          var $tagsListElement = $("<li>");
+          $tagsListElement.append($("<h3>").text(tag.name));
+          var $innerList = $("<ul>");
+          tag.places.forEach(place => {
+            $innerList.append($("<li>").text(place).addClass("place-in-tag"))
+          })
+          $tagsListElement.append($innerList);
+          $content.append($tagsListElement);
+        })
+      } else if ($element.parent().is(":nth-child(4)")) {
+        var
+          $input = $("<input>").addClass("place-input"),
+          $inputLabel = $("<p>").text("Новое место"),
+          $tagInput = $("<input>").addClass("tags"),
+          $tagLabel = $("<p>").text("Разрешённые классы авто: "),
+          $button = $("<button>").text("+").addClass("btn-add");
+
+        $button.on("click", () => {
+          var name = $input.val();
+          var tags = $tagInput.val().split(",").map(tag => tag.trim());
+          places.push({"name" : name, "isFree" : 1, "tags" : tags})
+          $input.val("");
+          $tagInput.val("");
+        })
+       $content = $("<div>")
+         .append($inputLabel)
+         .append($input)
+         .append($tagLabel)
+         .append($tagInput)
+         .append($button);
       }
       $("main .content").append($content);
       return false;
@@ -53,4 +108,8 @@ var main = function () {
   $(".tabs a:first-child span").trigger("click")
 };
 
-$(document).ready(main);
+$(document).ready(() => {
+  $.getJSON("../data/places.json", (placesJson) => {
+    main(placesJson)
+  })
+});

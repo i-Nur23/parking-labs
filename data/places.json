@@ -1,0 +1,77 @@
+[
+  {
+    "name" : "A1",
+    "isFree" : 0,
+    "tags" : ["A", "B", "C"]
+  },
+  {
+    "name" : "A2",
+    "isFree" : 0,
+    "tags" : ["B", "C"]
+  },
+  {
+    "name" : "A3",
+    "isFree" : 0,
+    "tags" : ["B", "C"]
+  },
+  {
+    "name" : "A4",
+    "isFree" : 1,
+    "tags" : ["D", "E"]
+  },
+  {
+    "name" : "A5",
+    "isFree" : 1,
+    "tags" : ["D", "E"]
+  },
+  {
+    "name" : "B1",
+    "isFree" : 1,
+    "tags" : ["C", "D"]
+  },
+  {
+    "name" : "B2",
+    "isFree" : 0,
+    "tags" : ["C", "D", "E"]
+  },
+  {
+    "name" : "B3",
+    "isFree" : 0,
+    "tags" : ["B", "C"]
+  },
+  {
+    "name" : "B4",
+    "isFree" : 0,
+    "tags" : ["A", "B"]
+  },
+  {
+    "name" : "B5",
+    "isFree" : 0,
+    "tags" : ["A"]
+  },
+  {
+    "name" : "C1",
+    "isFree" : 1,
+    "tags" : ["A"]
+  },
+  {
+    "name" : "C2",
+    "isFree" : 1,
+    "tags" : ["B", "C"]
+  },
+  {
+    "name" : "C3",
+    "isFree" : 0,
+    "tags" : ["B", "C"]
+  },
+  {
+    "name" : "C4",
+    "isFree" : 0,
+    "tags" : ["D", "E", "F"]
+  },
+  {
+    "name" : "C5",
+    "isFree" : 1,
+    "tags" : ["E", "F"]
+  }
+]

@@ -1,18 +1,18 @@
-<!doctype html>
-<html lang="ru">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <title>Австостоянка "Анаконда"</title>
   <meta charset="UTF-8"/>
   <link rel="stylesheet" type="text/css" href="../reset.css">
   <link rel="stylesheet" type="text/css" href="../style.css">
-  <link rel="stylesheet" type="text/css" href="places.css">
+  <link rel="stylesheet" type="text/css" href="slideShow.css">
   <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <script
           src="https://code.jquery.com/jquery-3.6.4.min.js"
           integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
           crossorigin="anonymous"></script>
-  <script src="places.js"></script>
+  <script src="slideShow.js"></script>
 </head>
 <body>
 <header>
@@ -27,16 +27,17 @@
   <hr/>
 </header>
 <main>
-  <div class="container">
-    <div class="tabs">
-      <a href=""><span class="active">Занятые</span></a>
-      <a href=""><span>Свободные</span></a>
-      <a href=""><span>Классы авто</span></a>
-      <a href=""><span>Добавить</span></a>
-    </div>
-    <div class="content">
-    </div>
+  <div class="tag">
+    <p>Класс автомобиля</p>
+    <select id="choosen-tag">
+      <option selected="selected">Все</option>
+      <option>A</option>
+      <option>B</option>
+      <option>C</option>
+      <option>D</option>
+    </select>
   </div>
+  <div class="slide"></div>
 </main>
 <footer>
   <div class="container">
@@ -49,7 +50,7 @@
       <br/>
       <p>Татарстан, Казань 420032</p>
     </div>
-    <div class="sitemap">
+    <div class="sitemap"></div>
       <h5>Карта сайта</h5>
       <ul>
         <div class="left-sitemap">
@@ -60,7 +61,7 @@
         <div class="right-sitemap">
           <li><a href="#">Техподдержка</a></li>
           <li><a href="../faq.html">ВиО</a></li>
-          <li><a href="../slideShow/slideShow.html">Слайд-шоу</a></li>
+          <li><a href="#">Места</a></li>
         </div>
       </ul>
     </div>

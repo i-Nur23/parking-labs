@@ -55,7 +55,7 @@ header nav {
     float: right;
 }
 
-p , a, li{
+p , a, li, select{
     font-family: 'Roboto', sans-serif;
 }
 

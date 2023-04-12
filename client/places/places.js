@@ -1,41 +1,27 @@
 var main = (placesJson) => {
   "use strict";
   var places = placesJson;
-  var organizeByTags = (placesList) => {
-    var arrayOfTags = [];
-    placesList.forEach(place => {
-      place.tags.forEach(tag => {
-        if (arrayOfTags.indexOf(tag) == -1) {
-          arrayOfTags.push(tag)
-        }
-      })
-    })
-
-    var tagObjects = arrayOfTags.map(tag => {
-      var tagPlaces = [];
-      placesList.forEach(place => {
-        if (place.tags.indexOf(tag) !== -1) {
-          tagPlaces.push(place.name)
-        }
-      });
-      return {"name" : tag, "places" : tagPlaces};
-    })
-
-    return tagObjects;
-  }
 
   var addPlaceClickListener = (li, n) => {
     li.on("click", () => {
       var text = li.text();
-      var new_places = places.map(place => {
-        if (place.name === text){
-          place.isFree = !place.isFree;
-        }
 
-        return place;
-      });
-      places = new_places;
-      $(`.tabs a:nth-child(${n}) span`).trigger("click")
+      $.ajax({
+        url: `/places/${text}`,
+        method: 'PATCH',
+        async : false,
+        success: (result) => {
+          $.getJSON("/places.json", (placesJson) => {
+            places = placesJson;
+          })
+        },
+        error: (xhr) => {
+          console.log(xhr.status + ' ' + xhr.responseText)
+        },
+        complete : () => {
+          $(`.tabs a:nth-child(${n}) span`).trigger("click");
+        }
+      })
     })
   }
 
@@ -65,8 +51,8 @@ var main = (placesJson) => {
           }
         })
       } else if ($element.parent().is(":nth-child(3)")) {
-        var organizedByTags = organizeByTags(places);
-        console.log(organizedByTags)
+        var organizedByTags;
+        $.getJSON('/organisedPlaces.json', res => organizedByTags = res);
         $content = $("<ul>");
         organizedByTags.forEach(tag => {
           var $tagsListElement = $("<li>");
@@ -89,10 +75,17 @@ var main = (placesJson) => {
         $button.on("click", () => {
           var name = $input.val();
           var tags = $tagInput.val().split(",").map(tag => tag.trim());
-          places.push({"name" : name, "isFree" : 1, "tags" : tags})
-          $input.val("");
-          $tagInput.val("");
+          $.post("/newPlace", {"name" : name, "tags" : tags}, res => {
+            if (res.success){
+              $input.val("");
+              $tagInput.val("");
+            } else {
+              console.log(res.description);
+            }
+            $.getJSON('/places.json', placesJson => places = placesJson);
+          })
         })
+
        $content = $("<div>")
          .append($inputLabel)
          .append($input)
@@ -109,7 +102,8 @@ var main = (placesJson) => {
 };
 
 $(document).ready(() => {
-  $.getJSON("../data/places.json", (placesJson) => {
+  $.ajaxSetup({async : false})
+  $.getJSON("/places.json", (placesJson) => {
     main(placesJson)
   })
 });

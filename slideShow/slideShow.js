@@ -40,14 +40,19 @@ var main = () => {
   ]
 
   var slides = slidesInit;
+  var stop = false;
 
   $("select").change(() => {
     var tag = $( "select option:selected" ).text();
     if (tag != "Все"){
       slides = slidesInit.filter(slide => slide.tag == tag);
       displaySlide(0);
+      stop = true;
+    } else {
+      slides = slidesInit;
+      displaySlide(0);
+      stop = true;
     }
-
   })
 
   var displaySlide = (slideIndex) => {
@@ -57,9 +62,14 @@ var main = () => {
     $slide.fadeIn();
     setTimeout(() => {
       slideIndex = slideIndex == slides.length - 1 ? 0 : slideIndex + 1;
-      displaySlide(slideIndex);
+      if (!stop){
+        displaySlide(slideIndex);
+      } else {
+        stop = false;
+      }
     },2000)
   };
+
   displaySlide(0);
 }
 $(document).ready(main);

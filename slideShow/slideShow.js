@@ -1,5 +1,4 @@
 var main = () => {
-  /*var messages = ["первое сообщение", "второе сообщение", "третье сообщение","четвертое сообщение"];*/
   var slidesInit = [
     {
       src : "../images/slides/matiz.jpg",

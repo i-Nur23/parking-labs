@@ -83,10 +83,6 @@ places = [
   }
 ]
 
-app.use(express.static(path.dirname(__dirname) + "/client"))
-app.use(express.urlencoded())
-http.createServer(app).listen(3000);
-
 app.get("/places.json", (req, res) => {
   res.json(places)
 })
@@ -138,3 +134,6 @@ app.post("/newPlace", (req, res) => {
   }
 })
 
+app.use(express.static(path.dirname(__dirname) + "/client"))
+app.use(express.urlencoded())
+http.createServer(app).listen(3000);

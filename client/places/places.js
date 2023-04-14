@@ -1,6 +1,6 @@
-var main = (placesJson) => {
+var main = (places) => {
   "use strict";
-  var places = placesJson;
+  //var places = placesJson;
 
   var addPlaceClickListener = (li, n) => {
     li.on("click", () => {

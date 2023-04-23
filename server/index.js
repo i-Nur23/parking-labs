@@ -1,139 +1,102 @@
-var express = require("express")
-var http = require("http")
-var path = require("path")
-const {urlencoded} = require("express");
+import express from "express"
+import http from "http"
+import path from "path"
+import mongoose, {Model} from "mongoose";
+import url from "url";
+import bodyParser from "body-parser";
+import {Place} from "./models/Place.js";
+//import {Place} from "./models/Place";
 
-app = express();
+const app = express();
 
-places = [
-  {
-    "name" : "A1",
-    "isFree" : 0,
-    "tags" : ["A", "B", "C"]
-  },
-  {
-    "name" : "A2",
-    "isFree" : 0,
-    "tags" : ["B", "C"]
-  },
-  {
-    "name" : "A3",
-    "isFree" : 0,
-    "tags" : ["B", "C"]
-  },
-  {
-    "name" : "A4",
-    "isFree" : 1,
-    "tags" : ["D", "E"]
-  },
-  {
-    "name" : "A5",
-    "isFree" : 1,
-    "tags" : ["D", "E"]
-  },
-  {
-    "name" : "B1",
-    "isFree" : 1,
-    "tags" : ["C", "D"]
-  },
-  {
-    "name" : "B2",
-    "isFree" : 0,
-    "tags" : ["C", "D", "E"]
-  },
-  {
-    "name" : "B3",
-    "isFree" : 0,
-    "tags" : ["B", "C"]
-  },
-  {
-    "name" : "B4",
-    "isFree" : 0,
-    "tags" : ["A", "B"]
-  },
-  {
-    "name" : "B5",
-    "isFree" : 0,
-    "tags" : ["A"]
-  },
-  {
-    "name" : "C1",
-    "isFree" : 1,
-    "tags" : ["A"]
-  },
-  {
-    "name" : "C2",
-    "isFree" : 1,
-    "tags" : ["B", "C"]
-  },
-  {
-    "name" : "C3",
-    "isFree" : 0,
-    "tags" : ["B", "C"]
-  },
-  {
-    "name" : "C4",
-    "isFree" : 0,
-    "tags" : ["D", "E", "F"]
-  },
-  {
-    "name" : "C5",
-    "isFree" : 1,
-    "tags" : ["E", "F"]
+const __filename = url.fileURLToPath(import.meta.url);
+const dirname = path.dirname(path.dirname(__filename))
+
+app.use(express.static(dirname + "/client"))
+app.use(express.json({extended : true}))
+//app.use(express.urlencoded())
+
+mongoose.connect('mongodb://127.0.0.1:27017/parking');
+
+app.listen(3000,() => {
+  console.log(`Server working`)
+})
+
+app.get("/places.json", async (req, res) => {
+  try{
+    res.json(
+      await Place
+        .find()
+        .exec()
+    )
+  } catch (e) {
+    console.log(e);
   }
-]
 
-app.get("/places.json", (req, res) => {
-  res.json(places)
 })
 
-app.get("/organisedPlaces.json", (req, res) => {
-  var arrayOfTags = [];
-  places.forEach(place => {
-    place.tags.forEach(tag => {
-      if (arrayOfTags.indexOf(tag) == -1) {
-        arrayOfTags.push(tag)
-      }
-    })
-  })
+app.get("/organisedPlaces.json", async (req, res) => {
+  try {
+    var places = await Place
+      .find()
+      .exec()
 
-  var tagObjects = arrayOfTags.map(tag => {
-    var tagPlaces = [];
+    var arrayOfTags = [];
     places.forEach(place => {
-      if (place.tags.indexOf(tag) !== -1) {
-        tagPlaces.push(place.name)
-      }
-    });
-    return {"name" : tag, "places" : tagPlaces};
-  })
+      place.tags.forEach(tag => {
+        if (arrayOfTags.indexOf(tag) == -1) {
+          arrayOfTags.push(tag)
+        }
+      })
+    })
 
-  res.json(tagObjects);
+    var tagObjects = arrayOfTags.map(tag => {
+      var tagPlaces = [];
+      places.forEach(place => {
+        if (place.tags.indexOf(tag) !== -1) {
+          tagPlaces.push(place.name)
+        }
+      });
+      return {"name" : tag, "places" : tagPlaces};
+    })
+
+    res.json(tagObjects);
+  } catch (e) {
+    console.log(e);
+  }
 })
 
-app.patch("/places/:name", (req, res) => {
-  var name = req.params.name;
-  var place = places.find(p => p.name == name);
-  if(place){
-    place.isFree = !place.isFree;
+app.patch("/places/:name", async (req, res) => {
+  try{
+    var name = req.params.name;
+
+    await Place
+      .findOneAndUpdate({name : name}, [{ $set : {"isFree" : {$eq : [false, "$isFree"]}}}])
+      .exec();
+
     res.send("OK")
-  } else {
+  } catch (e) {
     res.send("NOT OK")
   }
 })
 
 app.post("/newPlace", (req, res) => {
-  var body = req.body;
-  var name = body.name;
-  var tags = body.tags;
-  var place = places.find(p => p.name == name);
-  if(!place){
-    places.push({name : name, isFree : 1, tags : tags})
-    res.json({success : true, description : ""});
-  } else {
-    res.json({success : false, description : "Такое место уже есть"});
+  try{
+    console.log(req.body);
+    var body = req.body;
+    var name = body.name;
+    var tags = body.tags;
+    Place.find({name : name }).exec().then( places => {
+      if (places.length == 0) {
+        var place = new Place({name: name, isFree: true, tags: tags});
+        place.save();
+        res.json({success: true, description: ""});
+      } else {
+        res.json({success: false, description: "Такое место уже есть"});
+      }
+    } )
+  } catch (e) {
+    console.log(e);
+    res.json({success: false, description: "Ошибка на сервере"});
   }
 })
-
-app.use(express.static(path.dirname(__dirname) + "/client"))
-app.use(express.urlencoded())
-http.createServer(app).listen(3000);

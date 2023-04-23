@@ -9,7 +9,6 @@ var main = (places) => {
       $.ajax({
         url: `/places/${text}`,
         method: 'PATCH',
-        async : false,
         success: (result) => {
           $.getJSON("/places.json", (placesJson) => {
             places = placesJson;
@@ -75,7 +74,26 @@ var main = (places) => {
         $button.on("click", () => {
           var name = $input.val();
           var tags = $tagInput.val().split(",").map(tag => tag.trim());
-          $.post("/newPlace", {"name" : name, "tags" : tags}, res => {
+
+          fetch("/newPlace", {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name : name, tags : tags})
+          }).then(res => res.json().then(data => {
+            if (data.success){
+              $input.val("");
+              $tagInput.val("");
+            } else {
+              console.log(data.description);
+            }
+            $.getJSON('/places.json', placesJson => places = placesJson);
+          }))
+
+
+          /*$.post("/newPlace", {name : name, tags : tags}, (res) => {
             if (res.success){
               $input.val("");
               $tagInput.val("");
@@ -83,7 +101,27 @@ var main = (places) => {
               console.log(res.description);
             }
             $.getJSON('/places.json', placesJson => places = placesJson);
-          })
+          })*/
+
+          /*$.ajax(
+            {
+              url : "/newPlace",
+              data : {"name" : name, "tags" : tags},
+              method: "POST",
+              headers : {
+                "Content-type" : "application/json"
+              },
+              success: (res) => {
+                if (res.success){
+                  $input.val("");
+                  $tagInput.val("");
+                } else {
+                  console.log(res.description);
+                }
+                $.getJSON('/places.json', placesJson => places = placesJson);
+              }
+            }
+            )*/
         })
 
        $content = $("<div>")

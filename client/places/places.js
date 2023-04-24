@@ -91,37 +91,6 @@ var main = (places) => {
             }
             $.getJSON('/places.json', placesJson => places = placesJson);
           }))
-
-
-          /*$.post("/newPlace", {name : name, tags : tags}, (res) => {
-            if (res.success){
-              $input.val("");
-              $tagInput.val("");
-            } else {
-              console.log(res.description);
-            }
-            $.getJSON('/places.json', placesJson => places = placesJson);
-          })*/
-
-          /*$.ajax(
-            {
-              url : "/newPlace",
-              data : {"name" : name, "tags" : tags},
-              method: "POST",
-              headers : {
-                "Content-type" : "application/json"
-              },
-              success: (res) => {
-                if (res.success){
-                  $input.val("");
-                  $tagInput.val("");
-                } else {
-                  console.log(res.description);
-                }
-                $.getJSON('/places.json', placesJson => places = placesJson);
-              }
-            }
-            )*/
         })
 
        $content = $("<div>")

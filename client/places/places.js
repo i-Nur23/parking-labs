@@ -7,13 +7,13 @@ var main = (places) => {
       var text = li.text();
 
       $.ajax({
-        url: `/places/${text}`,
+        url: `${text}`,
         method: 'PATCH',
-        success: (result) => {
-          $.getJSON("/places.json", (placesJson) => {
+        /*success: (result) => {
+          $.getJSON("places.json", (placesJson) => {
             places = placesJson;
           })
-        },
+        },*/
         error: (xhr) => {
           console.log(xhr.status + ' ' + xhr.responseText)
         },
@@ -32,6 +32,9 @@ var main = (places) => {
       $element.addClass("active");
       $("main .content").empty();
       if ($element.parent().is(":nth-child(1)")){
+        var places;
+        $.getJSON('places.json', res => places = res);
+        console.log(places)
         $content = $("<ul>");
         places.forEach(place => {
           if (!place.isFree){
@@ -42,7 +45,9 @@ var main = (places) => {
         })
       } else if ($element.parent().is(":nth-child(2)")){
         $content = $("<ul>");
-        places.forEach(place => {
+        var freePlaces;
+        $.getJSON('freePlaces.json', res => freePlaces = res)
+        freePlaces.forEach(place => {
           if (place.isFree){
             var $listElement = $("<li>").text(place.name).addClass("place");
             addPlaceClickListener($listElement, 2)
@@ -51,7 +56,7 @@ var main = (places) => {
         })
       } else if ($element.parent().is(":nth-child(3)")) {
         var organizedByTags;
-        $.getJSON('/organisedPlaces.json', res => organizedByTags = res);
+        $.getJSON('organisedPlaces.json', res => organizedByTags = res);
         $content = $("<ul>");
         organizedByTags.forEach(tag => {
           var $tagsListElement = $("<li>");
@@ -75,11 +80,11 @@ var main = (places) => {
           var name = $input.val();
           var tags = $tagInput.val().split(",").map(tag => tag.trim());
 
-          fetch("/newPlace", {
+          fetch("newPlace", {
             method: 'POST',
             headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
+              'Accept' : 'application/json',
+              'Content-Type' : 'application/json'
             },
             body: JSON.stringify({name : name, tags : tags})
           }).then(res => res.json().then(data => {
@@ -89,7 +94,7 @@ var main = (places) => {
             } else {
               console.log(data.description);
             }
-            $.getJSON('/places.json', placesJson => places = placesJson);
+            $.getJSON('places.json', placesJson => places = placesJson);
           }))
         })
 
@@ -110,7 +115,7 @@ var main = (places) => {
 
 $(document).ready(() => {
   $.ajaxSetup({async : false})
-  $.getJSON("/places.json", (placesJson) => {
+  $.getJSON("places.json", (placesJson) => {
     main(placesJson)
   })
 });

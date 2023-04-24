@@ -1,0 +1,35 @@
+ul.users li{
+    padding: 2em;
+    border : black solid 1px;
+    border-radius: 0.4em;
+    display: flex;
+    justify-content: space-between;
+    margin: 7px 0;
+}
+
+button.delete {
+    background: #f55151;
+    border-radius: 0.5em;
+    padding: 6px;
+    color: white;
+    border: 0;
+}
+
+button.add {
+    background: darkblue;
+    border-radius: 0.5em;
+    padding: 6px;
+    color: white;
+    border: 0;
+}
+
+input.name-input {
+    padding: 2px;
+    border: gray solid 1px;
+    border-radius: 0.2em;
+
+}
+
+input.name-input:focus {
+    outline: none;
+}

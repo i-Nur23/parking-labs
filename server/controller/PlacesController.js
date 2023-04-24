@@ -1,17 +1,37 @@
 import {Place} from "../models/Place.js";
+import {User} from "../models/User.js";
 
 export class PlacesContoller {
-  GetAllPlaces = async (req, res) => {
+  GetAllUserPlaces = async (req, res) => {
     try{
+      var username = req.params.username || null;
+
+      if (username !== null) {
+        var user = await User.findOne({"username": username}).exec();
+        if (user === null){
+          res.status(404).json({"result" : user});
+        } else {
+          var places = await Place.find({owner : user._id, isFree : false}).exec();
+          res.json(places);
+        }
+      } else {
+        res.status(404).json({"username": username});
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  GetAllFreePlaces = async (req, res) => {
+    try {
       res.json(
         await Place
-          .find()
+          .find({isFree: true})
           .exec()
       )
     } catch (e) {
       console.log(e);
     }
-
   }
 
   GetPlacesOrganizedByTags = async (req, res) => {
@@ -47,13 +67,27 @@ export class PlacesContoller {
 
   ChangePlaceStatus = async (req, res) => {
     try{
+      var username = req.params.username;
       var name = req.params.name;
 
-      await Place
-        .findOneAndUpdate({name : name}, [{ $set : {"isFree" : {$eq : [false, "$isFree"]}}}])
-        .exec();
+      if (username !== null)  {
+        Place.findOne({name: name}).then(async place => {
+          if (!place.isFree){
+            place.isFree = true;
+          } else {
+            await User.findOne({username : username}).then(user => {
+              place.isFree = false;
+              place.owner = user._id;
+            });
+          }
 
-      res.send("OK")
+          place.save();
+        })
+
+        res.send("OK")
+      } else {
+        res.status(404).json({"username": username});
+      }
     } catch (e) {
       res.send("NOT OK")
     }
@@ -61,7 +95,13 @@ export class PlacesContoller {
 
   AddNewPlace = (req, res) => {
     try{
-      console.log(req.body);
+      var username = req.params.username;
+      if (username !== 'admin' || username === null){
+        res.status(403).json({description : "У Вас нет прав на это действие"});
+        return;
+      }
+
+
       var body = req.body;
       var name = body.name;
       var tags = body.tags;
